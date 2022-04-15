@@ -12,11 +12,11 @@ function evaluate(expression: string): number {
       } else if (item === ')') {
         while (exps.length > 0) {
           const state = exps.pop();
-          if (state !== '(') {
-            const numB = nums.pop();
-            const numA = nums.pop();
-            nums.push(calculate(state, numA, numB));
-          } else break;
+          if (state === '(') break;
+
+          const numB = nums.pop();
+          const numA = nums.pop();
+          nums.push(calculate(state, numA, numB));
         }
       } else {
         if (exps.length > 0) {
@@ -60,19 +60,11 @@ function calculate(operator: Operator, numA: number, numB: number) {
 
 function getExpArr(expression: string): Array<string | number> {
   const result = [];
-  const exps = {
-    '+': true,
-    '-': true,
-    '*': true,
-    '/': true,
-    '(': true,
-    ')': true,
-  };
 
   const state = [...expression]
     .filter((char) => char !== ' ')
     .reduce((state, item) => {
-      if (exps[item]) {
+      if (getOperatorRatio(item)) {
         if (item === '(') {
           // 열린 괄호처리
           result.push(item);
@@ -97,6 +89,16 @@ function getExpArr(expression: string): Array<string | number> {
   if (state.length > 0) result.push(parseFloat(state.join('')));
 
   return result;
+}
+function getOperatorRatio(operator: string): number {
+  return {
+    '+': 2,
+    '-': 2,
+    '*': 3,
+    '/': 3,
+    '(': 1,
+    ')': 1,
+  }[operator];
 }
 
 evaluate('1 + 2 * 3'); // 7
