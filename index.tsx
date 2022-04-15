@@ -13,14 +13,18 @@ function evaluate(expression: string): number {
         while (exps.length > 0) {
           const state = exps.pop();
           if (state !== '(') {
-            nums.push(calculate(state, nums.pop(), nums.pop()));
-          }
+            const numB = nums.pop();
+            const numA = nums.pop();
+            nums.push(calculate(state, numA, numB));
+          } else break;
         }
       } else {
         if (exps.length > 0) {
           const prev = exps.pop();
           if (getOperatorRatio(prev) >= getOperatorRatio(item)) {
-            nums.push(calculate(prev, nums.pop(), nums.pop()));
+            const numB = nums.pop();
+            const numA = nums.pop();
+            nums.push(calculate(prev, numA, numB));
             exps.push(item);
           } else {
             exps.push(prev, item);
@@ -30,7 +34,9 @@ function evaluate(expression: string): number {
     }
   });
   while (exps.length > 0) {
-    nums.push(calculate(exps.pop(), nums.pop(), nums.pop()));
+    const numB = nums.pop();
+    const numA = nums.pop();
+    nums.push(calculate(exps.pop(), numA, numB));
   }
 
   return nums[0];
