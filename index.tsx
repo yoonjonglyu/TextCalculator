@@ -68,11 +68,6 @@ function getExpArr(expression: string): Array<string | number> {
         if (item === '(') {
           // 열린 괄호처리
           result.push(item);
-        } else if (item === ')') {
-          // 닫힌 괄호 처리
-          if (state.length > 0) result.push(parseFloat(state.join('')));
-          result.push(item);
-          state = [];
         } else if (state.length === 0 && result[result.length - 1] !== ')') {
           // 음수 처리
           state.push(item);
