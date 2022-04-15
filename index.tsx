@@ -4,10 +4,36 @@ function evaluate(expression: string): number {
   const nums = [];
   const exps = [];
   getExpArr(expression).forEach((item) => {
-    typeof item === 'number' ? nums.push(item) : exps.push(item);
+    if (typeof item === 'number') {
+      nums.push(item);
+    } else {
+      if (item === '(') {
+        exps.push(item);
+      } else if (item === ')') {
+        while (exps.length > 0) {
+          const state = exps.pop();
+          if (state !== '(') {
+            nums.push(calculate(state, nums.pop(), nums.pop()));
+          }
+        }
+      } else {
+        if (exps.length > 0) {
+          const prev = exps.pop();
+          if (getOperatorRatio(prev) >= getOperatorRatio(item)) {
+            nums.push(calculate(prev, nums.pop(), nums.pop()));
+            exps.push(item);
+          } else {
+            exps.push(prev, item);
+          }
+        } else exps.push(item);
+      }
+    }
   });
-  console.log(nums, exps);
-  return calculate('+', 1, 2);
+  while (exps.length > 0) {
+    nums.push(calculate(exps.pop(), nums.pop(), nums.pop()));
+  }
+
+  return nums[0];
 }
 
 type Operator = '+' | '-' | '*' | '/';
